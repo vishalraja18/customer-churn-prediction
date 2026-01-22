@@ -45,3 +45,47 @@ plt.figure(figsize=(6,4))
 sns.boxplot(x='ChurnLabel', y='MonthlyCharge', data=df)
 plt.title("Churn vs Monthly Charges")
 plt.show()
+
+# =========================
+# DAY 2: DATA CLEANING
+# =========================
+
+# Make a copy of original data
+df_clean = df.copy()
+
+# Target column
+TARGET = "ChurnLabel"
+
+# Columns that cause data leakage (MUST REMOVE)
+leakage_cols = [
+    "CustomerID",
+    "CustomerStatus",
+    "ChurnScore",
+    "ChurnCategory",
+    "ChurnReason"
+]
+
+# Drop leakage columns
+df_clean.drop(columns=leakage_cols, inplace=True)
+
+print("Columns after removing leakage:")
+print(df_clean.columns)
+
+# Convert Yes/No columns to 1/0
+yes_no_cols = df_clean.select_dtypes(include='object').columns
+
+for col in yes_no_cols:
+    if set(df_clean[col].unique()) <= {"Yes", "No"}:
+        df_clean[col] = df_clean[col].map({"Yes": 1, "No": 0})
+
+print("Converted Yes/No columns to numeric")
+
+# Separate features and target
+X = df_clean.drop(TARGET, axis=1)
+y = df_clean[TARGET].map({"Yes": 1, "No": 0})
+
+print("Feature shape:", X.shape)
+print("Target shape:", y.shape)
+
+print("\nMissing values:")
+print(X.isnull().sum().sort_values(ascending=False).head())
