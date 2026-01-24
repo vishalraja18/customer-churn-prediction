@@ -143,3 +143,56 @@ X_test_processed = preprocessor.transform(X_test)
 
 print("\nProcessed training shape:", X_train_processed.shape)
 print("Processed testing shape:", X_test_processed.shape)
+
+# =========================
+# DAY 4: MODEL TRAINING
+# =========================
+
+from sklearn.linear_model import LogisticRegression
+from sklearn.ensemble import RandomForestClassifier
+from sklearn.metrics import (
+    accuracy_score,
+    precision_score,
+    recall_score,
+    f1_score,
+    classification_report
+)
+
+# Logistic Regression model
+log_reg = LogisticRegression(max_iter=1000)
+
+# Train
+log_reg.fit(X_train_processed, y_train)
+
+# Predict
+y_pred_lr = log_reg.predict(X_test_processed)
+
+# Evaluate
+print("\n--- Logistic Regression Results ---")
+print("Accuracy :", accuracy_score(y_test, y_pred_lr))
+print("Precision:", precision_score(y_test, y_pred_lr))
+print("Recall   :", recall_score(y_test, y_pred_lr))
+print("F1-score :", f1_score(y_test, y_pred_lr))
+
+# Random Forest model
+rf_model = RandomForestClassifier(
+    n_estimators=200,
+    random_state=42,
+    n_jobs=-1
+)
+
+# Train
+rf_model.fit(X_train_processed, y_train)
+
+# Predict
+y_pred_rf = rf_model.predict(X_test_processed)
+
+# Evaluate
+print("\n--- Random Forest Results ---")
+print("Accuracy :", accuracy_score(y_test, y_pred_rf))
+print("Precision:", precision_score(y_test, y_pred_rf))
+print("Recall   :", recall_score(y_test, y_pred_rf))
+print("F1-score :", f1_score(y_test, y_pred_rf))
+
+print("\nRandom Forest Classification Report:")
+print(classification_report(y_test, y_pred_rf))
