@@ -196,3 +196,54 @@ print("F1-score :", f1_score(y_test, y_pred_rf))
 
 print("\nRandom Forest Classification Report:")
 print(classification_report(y_test, y_pred_rf))
+
+# =========================
+# DAY 5: MODEL EVALUATION
+# =========================
+
+from sklearn.metrics import (
+    confusion_matrix,
+    ConfusionMatrixDisplay,
+    roc_curve,
+    roc_auc_score
+)
+
+# Confusion Matrix - Logistic Regression
+cm_lr = confusion_matrix(y_test, y_pred_lr)
+disp_lr = ConfusionMatrixDisplay(confusion_matrix=cm_lr)
+disp_lr.plot()
+plt.title("Confusion Matrix - Logistic Regression")
+plt.show()
+
+# Confusion Matrix - Random Forest
+cm_rf = confusion_matrix(y_test, y_pred_rf)
+disp_rf = ConfusionMatrixDisplay(confusion_matrix=cm_rf)
+disp_rf.plot()
+plt.title("Confusion Matrix - Random Forest")
+plt.show()
+
+# ROC for Logistic Regression
+y_prob_lr = log_reg.predict_proba(X_test_processed)[:, 1]
+
+fpr_lr, tpr_lr, _ = roc_curve(y_test, y_prob_lr)
+auc_lr = roc_auc_score(y_test, y_prob_lr)
+
+# ROC for Random Forest
+y_prob_rf = rf_model.predict_proba(X_test_processed)[:, 1]
+
+fpr_rf, tpr_rf, _ = roc_curve(y_test, y_prob_rf)
+auc_rf = roc_auc_score(y_test, y_prob_rf)
+
+plt.figure(figsize=(7, 5))
+plt.plot(fpr_lr, tpr_lr, label=f"Logistic Regression (AUC = {auc_lr:.2f})")
+plt.plot(fpr_rf, tpr_rf, label=f"Random Forest (AUC = {auc_rf:.2f})")
+plt.plot([0, 1], [0, 1], 'k--')
+plt.xlabel("False Positive Rate")
+plt.ylabel("True Positive Rate")
+plt.title("ROC Curve Comparison")
+plt.legend()
+plt.show()
+
+print("\nROC-AUC Scores:")
+print("Logistic Regression AUC:", auc_lr)
+print("Random Forest AUC:", auc_rf)
